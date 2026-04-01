@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Resume Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top left, #f5f7ff, #e7ebff 45%, #d2dcff);
+            color: #23304a;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            width: min(95%, 520px);
+            margin: 12px auto 18px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 10px 24px rgba(33, 63, 121, 0.12);
+            padding: 16px 16px 18px;
+            border: 2px solid #102f6f;
+            max-height: calc(100vh - 64px);
+            overflow-y: auto;
+            text-align: center;
+        }
+        h2 {
+            margin: 0 0 18px;
+            color: #1c3a70;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.95);
+        }
+        form {
+            display: grid;
+            gap: 14px;
+        }
+        label {
+            font-weight: 600;
+            color: #2d4a7d;
+            margin-bottom: 2px;
+        }
+        input[type='text'], input[type='email'], textarea {
+            width: 100%;
+            border: 1px solid #102f6f;
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            background: #dceeff;
+            box-shadow: inset 0 0 4px rgba(121, 142, 255, 0.08);
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        #name, #skills {
+            background: #dceeff;
+            border-color: #8cb5ff;
+        }
+        input[type='text']:focus, input[type='email']:focus, textarea:focus {
+            border-color: #6f8cf1;
+            box-shadow: inset 0 0 8px rgba(111, 140, 241, 0.25);
+        }
+        textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        .row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .row > * {
+            flex: 1 1 240px;
+        }
+        #buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        button {
+            flex: 1;
+            min-height: 46px;
+            border: 0;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #ff6db7, #ff9d38);
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.06);
+        }
+        #result {
+            margin-top: 18px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            min-height: 34px;
+            background: #eff3ff;
+            border: 1px solid #c7ceff;
+            color: #214b8f;
+            font-weight: 600;
+        }
+        .access-note {
+            margin: 0 0 16px;
+            padding: 12px 14px;
+            background: #e8f0ff;
+            border: 1px solid #a8c4ff;
+            border-radius: 12px;
+            color: #1c3369;
+            text-align: left;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        #insights {
+            margin-top: 18px;
+            padding: 14px;
+            border-radius: 14px;
+            background: #f2f6ff;
+            border: 1px solid #b5c4ff;
+            color: #1f336b;
+            text-align: left;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        .signature {
+            position: fixed;
+            right: 28px;
+            bottom: 24px;
+            font-family: 'Brush Script MT', 'Lucida Handwriting', cursive;
+            font-size: 26px;
+            color: #3151b7;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.17);
+            letter-spacing: 1px;
+            opacity: 0.88;
+            background: rgba(255,255,255,0.68);
+            border: 1px solid rgba(49, 81, 183, 0.2);
+            border-radius: 14px;
+            padding: 8px 14px;
+            box-shadow: 0 6px 16px rgba(27, 57, 115, 0.16);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+        }
+        @media (max-width: 520px) {
+            .container { padding: 18px 14px 18px; }
+            button { font-size: 0.92rem; }
+            .signature { right: 12px; bottom: 10px; font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Smart Resume Generator</h2>
+    <p class="access-note">If this app is served by the backend, open it in your browser at <strong>http://&lt;PC_IP&gt;:5000/app</strong> from your phone or another device on the same network.</p>
+
+<form id="profileForm">
+    <input type="text" id="name" placeholder="Full Name" required><br><br>
+    <input type="email" id="email" placeholder="Email" required><br><br>
+    <input type="text" id="phone" placeholder="Phone" required><br><br>
+    <input type="text" id="address" placeholder="Address"><br><br>
+    <textarea id="summary" placeholder="Summary"></textarea><br><br>
+    <textarea id="skills" placeholder="Skills"></textarea><br><br>
+    <textarea id="language" placeholder="Language (e.g., English, Hindi)"></textarea><br><br>
+    <textarea id="projects" placeholder="Projects"></textarea><br><br>
+    <textarea id="education" placeholder="Education"></textarea><br><br>
+    <div style="display:flex; align-items:center; gap:10px; flex-wrap: wrap;">
+        <input type="text" id="photo_url" placeholder="Photo URL (optional)" style="flex:1;" >
+        <label style="font-size:0.85rem; color:#4d6ea7; margin:0;">or upload JPEG</label>
+        <input type="file" id="photo_file" accept="image/jpeg,image/png" style="flex:1;" />
+    </div>
+    <textarea id="experience" placeholder="Experience"></textarea><br><br>
+    <label style="font-weight:700; color:#1f3f80; display:block; text-align:left;">Color Theme</label>
+    <select id="theme" style="width:100%; border:1px solid #102f6f; border-radius:8px; padding:8px; background:#f0f4ff;">
+        <option value="blue">Blue</option>
+        <option value="teal">Teal</option>
+        <option value="rose">Rose</option>
+    </select><br><br>
+
+    <div id="buttons">
+    <button type="button" id="generateBtn">Generate Resume PDF</button>
+</div>
+</form>
+
+<p id="result"></p>
+<div id="insights"></div>
+<div class="signature">Dangara Resume Maker</div>
+
+<script>
+async function validatePhoto(photoUrl) {
+    if (!photoUrl) return { ok: true };
+
+    if (photoUrl.startsWith('data:image/')) {
+        const regex = /^data:image\/(jpeg|jpg|png);base64,(.*)$/i;
+        const match = photoUrl.match(regex);
+        if (!match) {
+            return { ok: false, message: 'Invalid image format. Use JPEG or PNG.' };
+        }
+
+        const base64Data = match[2];
+        const byteLength = Math.round((base64Data.length * 3) / 4);
+        if (byteLength > 2 * 1024 * 1024) {
+            return { ok: false, message: 'Image must be under 2MB.' };
+        }
+
+        const image = new Image();
+        const dims = await new Promise((resolve, reject) => {
+            image.onload = () => resolve({ w: image.width, h: image.height });
+            image.onerror = () => reject(new Error('Image load failed'));
+            image.src = photoUrl;
+        });
+
+        if (dims.w < 300 || dims.h < 300) {
+            return { ok: false, message: 'Image resolution should be at least 300x300 pixels.' };
+        }
+        if (dims.w > 3840 || dims.h > 2160) {
+            return { ok: false, message: 'Image resolution should be at most 3840x2160 pixels (4K).' };
+        }
+        return { ok: true };
+    }
+
+    if (photoUrl.startsWith('http')) {
+        // For remote URL, try lightweight load to make sure it works.
+        const image = new Image();
+        try {
+            await new Promise((resolve, reject) => {
+                image.onload = () => resolve();
+                image.onerror = () => reject(new Error('Url image load failed'));
+                image.src = photoUrl;
+            });
+        } catch (_e) {
+            return { ok: false, message: 'Unable to load image from URL. Check link.' };
+        }
+        return { ok: true };
+    }
+
+    return { ok: false, message: 'Photo must be a URL or uploaded JPEG/PNG image.' };
+}
+
+document.getElementById("generateBtn").addEventListener("click", async function() {
+    const fileInput = document.getElementById("photo_file");
+    let photo_url = document.getElementById("photo_url").value.trim();
+
+    if (!photo_url && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        photo_url = await new Promise((resolve, reject) => {
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error("File read failed"));
+            reader.readAsDataURL(file);
+        });
+    }
+
+    const validation = await validatePhoto(photo_url);
+    if (!validation.ok) {
+        document.getElementById("result").innerText = validation.message;
+        return;
+    }
+
+    const API_BASE = window.location.protocol === 'file:' ? 'http://127.0.0.1:5000' : window.location.origin;
+    const data = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value,
+        summary: document.getElementById("summary").value,
+        skills: document.getElementById("skills").value,
+        language: document.getElementById("language").value,
+        projects: document.getElementById("projects").value,
+        education: document.getElementById("education").value,
+        experience: document.getElementById("experience").value,
+        photo_url: photo_url,
+        theme: document.getElementById("theme").value || "blue",
+    };
+
+    document.getElementById("result").innerText = "Analyzing profile and generating recommendations...";
+    document.getElementById("insights").innerText = "";
+
+    const analyzeResponse = await fetch(`${API_BASE}/api/analyze-profile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    });
+
+    if (!analyzeResponse.ok) {
+        document.getElementById("result").innerText = "Insight analysis failed. Check backend logs.";
+        return;
+    }
+
+    const analysis = await analyzeResponse.json();
+    const insightsContent = [];
+    insightsContent.push(`Recommended Role: ${analysis.recommended_role || 'N/A'}`);
+    insightsContent.push(`Role Confidence: ${analysis.recommended_confidence || 0}%`);
+    insightsContent.push(`Matched Keywords: ${analysis.recommended_keywords.join(', ') || 'None'}`);
+    insightsContent.push(`Missing Keywords: ${analysis.missing_keywords.join(', ') || 'None'}`);
+    insightsContent.push(`Gap Levels:\n${analysis.gap_analysis.map(g => `  - ${g.role}: ${g.gap_level} (${g.gap_ratio * 100}%)`).join('\n')}`);
+    if (analysis.optimization_notes && analysis.optimization_notes.length) {
+        insightsContent.push(`Optimization Notes:\n  - ${analysis.optimization_notes.join('\n  - ')}`);
+    }
+    document.getElementById("insights").innerText = insightsContent.join('\n\n');
+
+    const response = await fetch(`${API_BASE}/api/generate-resume`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, auto_optimize: true }),
+    });
+
+    if (!response.ok) {
+        document.getElementById("result").innerText = "Resume generation failed. Check backend logs.";
+        return;
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "resume.pdf";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+
+    document.getElementById("result").innerText = "Resume PDF generated and downloaded.";
+});
+</script>
+
+</body>
+</html>
